@@ -45,7 +45,7 @@ export async function registerRoutes(
 
   app.post("/api/classes", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const classData = insertClassSchema.parse({
         ...req.body,
         lecturerId: userId,
@@ -75,7 +75,7 @@ export async function registerRoutes(
 
   app.get("/api/lecturer/classes", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const classes = await storage.getClassesByLecturer(userId);
       res.json(classes);
     } catch (error) {
@@ -85,7 +85,7 @@ export async function registerRoutes(
 
   app.post("/api/enrollments", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const enrollment = insertEnrollmentSchema.parse({
         ...req.body,
         studentId: userId,
@@ -102,7 +102,7 @@ export async function registerRoutes(
 
   app.get("/api/enrollments/student", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const enrollments = await storage.getEnrollmentsByStudent(userId);
       res.json(enrollments);
     } catch (error) {
@@ -121,7 +121,7 @@ export async function registerRoutes(
 
   app.post("/api/enrollments/attendance", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { classId } = req.body;
       const enrollment = await storage.markAttendance(classId, userId);
       res.json(enrollment);
@@ -159,7 +159,7 @@ export async function registerRoutes(
 
   app.post("/api/chat", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const messageData = insertChatMessageSchema.parse({
         ...req.body,
         userId,
