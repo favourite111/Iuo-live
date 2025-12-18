@@ -11,7 +11,7 @@ A custom live streaming platform for Igbinedion University Teaching Hospital (IU
 - **Frontend**: React, TypeScript, Tailwind CSS, Shadcn UI
 - **Backend**: Express.js, Node.js
 - **Database**: PostgreSQL with Drizzle ORM
-- **Authentication**: Replit Auth (Google, GitHub, email)
+- **Authentication**: Email/Password with bcrypt and session-based auth (works on any platform)
 - **Routing**: Wouter
 - **State Management**: TanStack Query
 
@@ -20,6 +20,8 @@ A custom live streaming platform for Igbinedion University Teaching Hospital (IU
 ### Frontend (`client/src/`)
 - `pages/` - Page components
   - `landing.tsx` - Public landing page
+  - `login.tsx` - User login page
+  - `register.tsx` - User registration page
   - `dashboard.tsx` - User dashboard with role-based views
   - `schedule.tsx` - Class scheduling (lecturers only)
   - `recordings.tsx` - Recording library
@@ -41,8 +43,8 @@ A custom live streaming platform for Igbinedion University Teaching Hospital (IU
 
 ## Database Schema
 
-### Users (from auth)
-- id, email, firstName, lastName, profileImageUrl, role (admin/lecturer/student)
+### Users
+- id, email, password (hashed), firstName, lastName, profileImageUrl, role (admin/lecturer/student)
 
 ### Classes
 - id, title, description, lecturerId, scheduledAt, duration, status, roomCode
@@ -57,6 +59,14 @@ A custom live streaming platform for Igbinedion University Teaching Hospital (IU
 - id, classId, userId, message, createdAt
 
 ## API Routes
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - Login user
+- `POST /api/auth/logout` - Logout user
+- `GET /api/auth/user` - Get current user
+
+### Classes & Content
 - `GET /api/classes` - Get upcoming classes
 - `GET /api/classes/:id` - Get single class
 - `POST /api/classes` - Create class (auth required)
@@ -77,7 +87,36 @@ A custom live streaming platform for Igbinedion University Teaching Hospital (IU
 - Dev: `npm run dev` (starts Express + Vite)
 - DB Push: `npm run db:push`
 
+## Deployment (Render, Koyeb, etc.)
+
+### Required Environment Variables
+Set these in your deployment platform:
+- `DATABASE_URL` - PostgreSQL connection string
+- `SESSION_SECRET` - A strong random secret for session encryption (minimum 32 characters)
+- `NODE_ENV` - Set to `production`
+- `PORT` - Usually set automatically by the platform
+
+### Build Command
+```bash
+npm run build
+```
+
+### Start Command
+```bash
+npm start
+```
+
+### Notes
+- The app uses email/password authentication that works on any platform
+- Sessions are stored in PostgreSQL for persistence across restarts
+- Passwords are hashed with bcrypt (10 rounds)
+
 ## Recent Changes
+- December 17, 2025: Switched to universal email/password auth
+  - Replaced Replit Auth with bcrypt-based email/password authentication
+  - Works on Render, Koyeb, or any deployment platform
+  - Added login and register pages
+  - Session regeneration for security
 - December 17, 2025: Initial MVP implementation
   - Landing page with IUTH branding
   - Dashboard with role-based views
