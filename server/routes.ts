@@ -2,14 +2,16 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertClassSchema, insertEnrollmentSchema, insertChatMessageSchema } from "@shared/schema";
-import { isAuthenticated } from "./replit_integrations/auth/replitAuth";
+import { isAuthenticated, setupAuth } from "./replit_integrations/auth/replitAuth";
 import { z } from "zod";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  
+  // Setup authentication routes and session management
+  await setupAuth(app);
+
   app.get("/api/classes", async (req, res) => {
     try {
       const classes = await storage.getUpcomingClasses();
