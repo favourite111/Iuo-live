@@ -9,6 +9,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/hooks/use-auth";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
+import Login from "@/pages/login";
+import Register from "@/pages/register";
 import Dashboard from "@/pages/dashboard";
 import Schedule from "@/pages/schedule";
 import Recordings from "@/pages/recordings";
@@ -43,6 +45,7 @@ function Router() {
   const [location] = useLocation();
 
   const isClassroom = location.startsWith("/class/");
+  const isAuthPage = location === "/login" || location === "/register";
 
   if (isLoading) {
     return (
@@ -53,6 +56,14 @@ function Router() {
   }
 
   if (!user) {
+    if (isAuthPage) {
+      return (
+        <Switch>
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+        </Switch>
+      );
+    }
     return <Landing />;
   }
 
